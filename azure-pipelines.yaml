@@ -192,22 +192,27 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                echo 'Path:'
+                echo '-------> Path:'
                 pwd
-                echo 'Remove logs:'
-                rm -rf logs
-                echo 'Remove jemeter:'
-                rm -rf jmeter
-                echo 'Unzip jmeter text:'
-                unzip '$(Build.BuildId)-jmeter.zip' -d jmeter
-                echo 'path:' $PATH
+
+                echo '-------> Cleanning old data...'
+                rm -rf tests
+                echo '-------> Cleanned old data'
+                
+                echo '-------> Unzipping jmeter...'
+                unzip '$(Build.BuildId)-jmeter.zip' -d tests
+                echo '-------> Unzipped jmeter!'
+
                 export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
-                echo 'path with jmeter:' $PATH
-                jmeter -n -t jmeter/Starter.jmx \
-                  -l logs/test-output.csv \
-                  -e -f -o logs/test-log.html \
-                  -j logs/jmeter.log
-                echo 'jmeter test done, export to logs folder'
+                echo '-------> path with jmeter:' $PATH
+                
+                echo '-------> jmeter testing...'
+                jmeter -n -t tests/Starter.jmx \
+                  -l tests/logs/test-output.csv \
+                  -e -f -o tests/logs/test-log.html \
+                  -j tests/logs/jmeter.log
+                echo '-------> jmeter tested'
+
               workingDirectory: $(Pipeline.Workspace)/drop-jmeter
               
   #--------------------------------------------#  
