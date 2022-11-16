@@ -26,28 +26,29 @@ stages:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
     # Install Terraform on the pipeline agent 
-    - task: TerraformInstaller@0
-      displayName: 'Terrafom installation'
-      inputs:
-        terraformVersion: '$(terraformVersion)'
+    # - task: TerraformInstaller@0
+    #   displayName: 'Terrafom installation'
+    #   inputs:
+    #     terraformVersion: '$(terraformVersion)'
     
     # Run Terraform Init on the pipeline agent 
-    - task: TerraformTaskV3@3
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        backendServiceArm: '$(azureServiceConnectionId)'
-        backendAzureRmResourceGroupName: 'Azuredevops'
-        backendAzureRmStorageAccountName: 'tfstate899724623'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'test.terraform.tfstate'
+    # - task: TerraformTaskV3@3
+    #   displayName: 'Terraform init'
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'init'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+    #     backendServiceArm: '$(azureServiceConnectionId)'
+    #     backendAzureRmResourceGroupName: 'Azuredevops'
+    #     backendAzureRmStorageAccountName: 'tfstate899724623'
+    #     backendAzureRmContainerName: 'tfstate'
+    #     backendAzureRmKey: 'test.terraform.tfstate'
    
-    - task: TerraformTaskV3@3
-      displayName: Terraform validate
-      inputs:
-        provider: 'azurerm'
-        command: 'validate'
+    # - task: TerraformTaskV3@3
+    #   displayName: Terraform validate
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'validate'
 
     # OPTIONAL - This step is needed only if your Terraform VM uses an SSH key pair for login and you want your pipeline agent to connect to it. 
     # Generate an SSH key pair in your local/AZ Cloud shell. Use the public key in the Terraform VM module. 
@@ -67,13 +68,13 @@ stages:
 
     
     # Run Terraform Apply
-    - task: TerraformTaskV3@3
-      displayName: Terraform apply
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+    # - task: TerraformTaskV3@3
+    #   displayName: Terraform apply
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'apply'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+    #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
     # ToDo: Change the workingDirectory path, as applicable to you
     # Destroy the resources in Azure by running a separate pipeline. 
@@ -122,47 +123,47 @@ stages:
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
     # "ArchiveFiles@2" picks up the web package and archives it.
-    - task: ArchiveFiles@2
-      displayName: 'Archive UI Tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive UI Tests'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
     # Selenium Test Suite - Publish the package  
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
-      displayName: 'Upload Package'
-      artifact: drop-ui-tests
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
+    #   displayName: 'Upload Package'
+    #   artifact: drop-ui-tests
 
     #--------------------------------------------#    
     # FakeRestAPI - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    # # ToDo: Complete the ArchiveFiles@2 task and publish step 
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive FakeRestAPI'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
     # FakeRestAPI - Publish    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+    #   displayName: 'Upload Package'
+    #   artifact: drop-fakerestapi
 
     #--------------------------------------------#  
     # JMeter (Performance) Test Suite - Archive
     # ToDo: Complete the ArchiveFiles@2 task and publish step 
-#    - task: ArchiveFiles@2
-#      displayName: 'Archive PerformanceTestSuite'
-#      inputs:
-#        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-#        includeRootFolder: false
-#        archiveType: 'zip'
-#        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
-#    # JMeter Test Suite - Publish    
-#    - publish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
-#      displayName: 'Upload Package'
-#      artifact: drop-jmeter
+    - task: ArchiveFiles@2
+      displayName: 'Archive PerformanceTestSuite'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
+    # JMeter Test Suite - Publish    
+    - publish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
+      displayName: 'Upload Package'
+      artifact: drop-jmeter
 
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
@@ -179,22 +180,26 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: $(azureServiceConnectionId)
-              appName: $(appName)
-              appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip 
+          # - task: AzureWebApp@1
+          #   displayName: 'Deploy Azure Web App'
+          #   inputs:
+          #     azureSubscription: $(azureServiceConnectionId)
+          #     appName: $(appName)
+          #     appType: webApp
+          #     package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip 
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
-          # ToDo: Update the script below to install jmeter, unzip the jmeter test suite published zip artifact, and run the PerformanceTestSuite.  
-          # ToDo: Generate the log file. 
-          #- task: CmdLine@2
-          #  inputs:
-          #    script: |
-          #                                                                  # ToDo: Write your commands
-          #    workingDirectory: $(Pipeline.Workspace)/<artifact>            # ToDo: Use the artifact name from the task above
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo apt-get install openjdk-11-jre-headless -y
+                wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+                tar -xzvf jmeter.tgz
+                apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/Starter.jmx \
+                  -l automatedtesting/jmeter/logs/test-output.csv \
+                  -e -f -o automatedtesting/jmeter/logs/test-log.html \
+                  -j automatedtesting/jmeter/logs/jmeter.log
+              workingDirectory: $(Pipeline.Workspace)/drop-jmeter
               
   #--------------------------------------------#  
 #  # Selenium | Functional UI Tests
