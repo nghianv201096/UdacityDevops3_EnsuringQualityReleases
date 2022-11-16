@@ -192,8 +192,8 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                tar -xzvf '$(Build.BuildId)-jmeter.zip' 
-                jmeter -n -t Starter.jmx \
+                unzip '$(Build.BuildId)-jmeter.zip' -d jmeter 
+                jmeter -n -t jmeter/Starter.jmx \
                   -l logs/test-output.csv \
                   -e -f -o logs/test-log.html \
                   -j logs/jmeter.log
