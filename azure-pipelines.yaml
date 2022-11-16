@@ -89,36 +89,40 @@ stages:
 #--------------------------------------------#    
 #    # Postman - Install Newman    
 #    # ToDo: Update the command and verify the working directory
-#    - task: CmdLine@2
-#      displayName: Install Newman
-#      inputs:
-#        script:           # ToDo: Write your commands to install newman
-#        workingDirectory: $(System.DefaultWorkingDirectory)
+  - task: CmdLine@2
+    displayName: Install Newman
+    inputs:
+      script: |
+        npm install -g newman
+        workingDirectory: $(System.DefaultWorkingDirectory)
 #    # Postman Data Validation Test Suite    
 #    # ToDo: Verify the working directory and the newman scripts
-#    - task: CmdLine@2
-#      displayName: Run Data Validation Tests
-#      continueOnError: true
-#      inputs:
-#        script:           # ToDo: Write your commands
-#        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+  - task: CmdLine@2
+    displayName: Run Data Validation Tests
+    continueOnError: true
+    inputs:
+      script: |
+        newman run validation-data-test.json --reporters cli,junit --reporter-junit-export results\validation-data-test.xml
+      workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 #    # Postman Regression Test Suite    
 #    # ToDo: Update the command and verify the working directory
-#    - task: CmdLine@2
-#      displayName: Run Regression Tests
-#      continueOnError: true
-#      inputs:
-#        script:           # ToDo: Write your commands
-#        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+  - task: CmdLine@2
+    displayName: Run Regression Tests
+    continueOnError: true
+    inputs:
+      script: |
+        newman run regression-test.json --reporters cli,junit --reporter-junit-export results\regression-test.xml
+      workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 #    # Postman - Publish Results 
 #    # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
-#    - task: PublishTestResults@2
-#      inputs:
-#        testResultsFormat: 'JUnit'
-#        testResultsFiles: '**/TEST-*.xml'
-#        searchFolder:       # ToDo
-#        mergeTestResults: true
-#        testRunTitle:       # ToDo
+  - task: PublishTestResults@2
+    displayName: 'Publish test result'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/*-test.xml'
+      #searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman/results'
+      mergeTestResults: true
+      testRunTitle: 'Postman regression and data validation test'
 
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
@@ -149,21 +153,6 @@ stages:
     # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
     #   displayName: 'Upload Package'
     #   artifact: drop-fakerestapi
-
-    #--------------------------------------------#  
-    # JMeter (Performance) Test Suite - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive PerformanceTestSuite'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
-    # JMeter Test Suite - Publish    
-    - publish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter.zip'
-      displayName: 'Upload Package'
-      artifact: drop-jmeter
 
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
@@ -199,21 +188,17 @@ stages:
                 rm -rf tests
                 echo '-------> Cleanned old data'
                 
-                echo '-------> Unzipping jmeter...'
-                unzip '$(Build.BuildId)-jmeter.zip' -d tests
-                echo '-------> Unzipped jmeter!'
-
                 export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
                 echo '-------> path with jmeter:' $PATH
                 
                 echo '-------> jmeter testing...'
-                jmeter -n -t tests/Starter.jmx \
-                  -l tests/logs/test-output.csv \
-                  -e -f -o tests/logs/test-log.html \
-                  -j tests/logs/jmeter.log
+                jmeter -n -t Starter.jmx \
+                  -l logs/test-output.csv \
+                  -e -f -o logs/test-log.html \
+                  -j logs/jmeter.log
                 echo '-------> jmeter tested'
 
-              workingDirectory: $(Pipeline.Workspace)/drop-jmeter
+              workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
               
   #--------------------------------------------#  
 #  # Selenium | Functional UI Tests
