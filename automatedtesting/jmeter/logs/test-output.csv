@@ -1,0 +1,2 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1668616038319,2256,GET All Activities,200,OK,Starter 1-1,text,true,,3109,190,1,1,https://devops-azure-test-app-service.azurewebsites.net/api/Activities,2243,0,1941

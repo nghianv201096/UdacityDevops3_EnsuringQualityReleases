@@ -192,8 +192,17 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                echo 'Path:'
+                pwd
+                echo 'Remove logs:'
+                rm -rf logs
+                echo 'Remove jemeter:'
+                rm -rf jmeter
+                echo 'Unzip jmeter text:'
                 unzip '$(Build.BuildId)-jmeter.zip' -d jmeter
+                echo $PATH
                 export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
+                echo $PATH
                 jmeter -n -t jmeter/Starter.jmx \
                   -l logs/test-output.csv \
                   -e -f -o logs/test-log.html \
