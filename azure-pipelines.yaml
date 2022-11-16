@@ -192,7 +192,8 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                unzip '$(Build.BuildId)-jmeter.zip' -d jmeter 
+                unzip '$(Build.BuildId)-jmeter.zip' -d jmeter
+                export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
                 jmeter -n -t jmeter/Starter.jmx \
                   -l logs/test-output.csv \
                   -e -f -o logs/test-log.html \
