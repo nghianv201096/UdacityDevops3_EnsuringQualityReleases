@@ -200,13 +200,14 @@ stages:
                 rm -rf jmeter
                 echo 'Unzip jmeter text:'
                 unzip '$(Build.BuildId)-jmeter.zip' -d jmeter
-                echo $PATH
+                echo 'path:' $PATH
                 export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
-                echo $PATH
+                echo 'path with jmeter:' $PATH
                 jmeter -n -t jmeter/Starter.jmx \
                   -l logs/test-output.csv \
                   -e -f -o logs/test-log.html \
                   -j logs/jmeter.log
+                echo 'jmeter test done, export to logs folder'
               workingDirectory: $(Pipeline.Workspace)/drop-jmeter
               
   #--------------------------------------------#  
