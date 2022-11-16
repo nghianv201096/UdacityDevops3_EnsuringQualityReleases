@@ -33,14 +33,13 @@ stages:
     
     # Run Terraform Init on the pipeline agent 
     - task: TerraformTaskV3@3
-      displayName: 'Terrafom init'
       inputs:
         provider: 'azurerm'
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendServiceArm: '$(azureServiceConnectionId)'
-        backendAzureRmResourceGroupName: 'devops-rg'
-        backendAzureRmStorageAccountName: 'tfstate3195213964'
+        backendAzureRmResourceGroupName: 'Azuredevops'
+        backendAzureRmStorageAccountName: 'tfstate899724623'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
    
