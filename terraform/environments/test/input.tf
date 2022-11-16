@@ -1,4 +1,4 @@
-# Azure GUIDS
+# Azure service principal
 variable "subscription_id" {}
 variable "client_id" {}
 variable "client_secret" {}
@@ -14,3 +14,6 @@ variable virtual_network_name {}
 variable address_prefix_test {}
 variable address_space {}
 
+# Virtual machine
+variable vm_username {}
+variable vm_password {}

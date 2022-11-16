@@ -1,0 +1,41 @@
+2022-11-15 22:55:04,618 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2022-11-15 22:55:04,691 INFO o.a.j.JMeter: Loading user properties from: /home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin/user.properties
+2022-11-15 22:55:04,693 INFO o.a.j.JMeter: Loading system properties from: /home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin/system.properties
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: Copyright (c) 1998-2022 The Apache Software Foundation
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: Version 5.5
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: java.version=11.0.17
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: os.name=Linux
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: os.arch=amd64
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: os.version=5.15.0-52-generic
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: file.encoding=UTF-8
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: java.awt.headless=null
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: Max memory     =1073741824
+2022-11-15 22:55:04,721 INFO o.a.j.JMeter: Available Processors =2
+2022-11-15 22:55:04,762 INFO o.a.j.JMeter: Default Locale=English (EN)
+2022-11-15 22:55:04,762 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2022-11-15 22:55:04,762 INFO o.a.j.JMeter: JMeterHome=/home/nghianv/Desktop/Tools/apache-jmeter-5.5
+2022-11-15 22:55:04,762 INFO o.a.j.JMeter: user.dir  =/home/nghianv/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/jmeter
+2022-11-15 22:55:04,762 INFO o.a.j.JMeter: PWD       =/home/nghianv/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/jmeter
+2022-11-15 22:55:04,766 INFO o.a.j.JMeter: IP: 127.0.1.1 Name: nghianv-virtual-machine FullName: nghianv-virtual-machine
+2022-11-15 22:55:04,794 INFO o.a.j.JMeter: Loaded icon properties from org/apache/jmeter/images/icon.properties
+2022-11-15 22:55:05,821 INFO o.a.j.JMeterGuiLauncher: Setting LAF to: com.github.weisj.darklaf.DarkLaf:com.github.weisj.darklaf.theme.DarculaTheme
+2022-11-15 22:55:12,725 INFO o.a.j.JMeterGuiLauncher: Loading file: Starter.jmx
+2022-11-15 22:55:12,738 INFO o.a.j.s.FileServer: Default base='/home/nghianv/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/jmeter'
+2022-11-15 22:55:12,739 INFO o.a.j.s.FileServer: Set new base='/home/nghianv/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/jmeter'
+2022-11-15 22:55:13,603 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2022-11-15 22:55:13,624 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2022-11-15 22:55:13,628 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2022-11-15 22:55:13,631 INFO o.a.j.s.SaveService: Loading file: Starter.jmx
+2022-11-15 22:55:13,653 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2022-11-15 22:55:13,654 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2022-11-15 22:55:13,654 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2022-11-15 22:55:13,654 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2022-11-15 22:55:13,654 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2022-11-15 22:55:13,654 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2022-11-15 22:55:13,678 INFO o.a.j.s.FileServer: Set new base='/home/nghianv/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/jmeter'
+2022-11-15 22:55:13,917 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2022-11-15 22:55:13,917 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to ISO-8859-1
+2022-11-15 22:55:13,917 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2022-11-15 22:55:13,917 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2022-11-15 22:55:14,744 INFO o.a.j.v.ViewResultsFullVisualizer: Add JavaFX to your Java installation if you want to use renderer: org.apache.jmeter.visualizers.RenderInBrowser
