@@ -180,6 +180,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: FakeRestAPI
+    condition: false
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -239,31 +240,38 @@ stages:
               targetType: 'inline'
               script: |           
                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-               #! /bin/bash
-               
                 sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
-                pip3 install selenium
-                sudo rm -rf chromedriver*
-                wget https://chromedriver.storage.googleapis.com/96.0.4664.18/chromedriver_linux64.zip //update the version here
-                unzip chromedriver*.zip
-                sudo mv chromedriver -f /usr/bin
-
-          - task: Bash@3
-            displayName: Run Selenium
-            inputs:
-              targetType: 'inline'
-              script: |
-                #! /bin/bash
-                python -m pip install --upgrade pip
                 pip install selenium
-                pip install pytest
-                pip install pytest-html
-                pip install chromedriver-py=96.0.4664.18
-                pip install pytest-xdist
-                pip install pytest-nunit
-                python3 automatedtesting/selenium/login.py
                 
+                #  ToDo: Add chromedriver executable to path
+                # wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+                # unzip chromedriver_linux64.zip 
+                # sudo chmod +x chromedriver
+                # mv chromedriver $(System.DefaultWorkingDirectory)/automatedtesting/selenium/
+                # chromium-browser -version
+                # chromedriver --version
+
+          - task: CmdLine@2
+            displayName: Run selenium
+            inputs:
+              script: |
+                echo $(System.DefaultWorkingDirectory) System.DefaultWorkingDirectory
+                wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+                unzip chromedriver_linux64.zip 
+                sudo chmod +x chromedriver
+                mv chromedriver ./automatedtesting/selenium/
+                chromium-browser -version
+                ./automatedtesting/selenium/chromedriver --version
+                python automatedtesting/selenium/login.py > selenium.log
+                sudo mkdir /var/logs
+                sudo cp selenium.log /var/logs/
+              workingDirectory: $(System.DefaultWorkingDirectory)
+              
+          - task: PublishPipelineArtifact@1
+            displayName: Publish selenium logs
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/selenium.log'
+              artifactName: 'drop-selenium-logs'
                 
