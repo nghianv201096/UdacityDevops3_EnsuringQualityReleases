@@ -112,11 +112,7 @@ stages:
       inputs:
         script: |
           export PATH=~/.npm-global/bin:$PATH
-          echo '----------->path:' $PATH
-          echo '----------->pwd:'
-          pwd
           chmod 744 ~/.npm-global/bin/newman
-          newman -v
           newman run validation-data-test.json --reporters cli,junit --reporter-junit-export results\validation-data-test.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 
@@ -127,6 +123,8 @@ stages:
       continueOnError: true
       inputs:
         script: |
+          export PATH=~/.npm-global/bin:$PATH
+          chmod 744 ~/.npm-global/bin/newman
           newman run regression-test.json --reporters cli,junit --reporter-junit-export results\regression-test.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 
