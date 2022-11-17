@@ -102,7 +102,7 @@ stages:
           export PATH=~/.npm-global/bin:$PATH
           source ~/.profile
           npm install -g newman
-          workingDirectory: $(System.DefaultWorkingDirectory)
+        workingDirectory: $(System.DefaultWorkingDirectory)
 
    # Postman Data Validation Test Suite    
    # ToDo: Verify the working directory and the newman scripts
