@@ -236,13 +236,12 @@ stages:
           - download: current
             artifact: 'drop-ui-tests'    
           - task: Bash@3
-            condition: false
             displayName: 'Run selenium'
             inputs:
               targetType: 'inline'
               script: |           
                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-                echo '--------->'
+                echo '--------->' System.DefaultWorkingDirectory
                 pwd
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
