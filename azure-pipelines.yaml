@@ -236,14 +236,16 @@ stages:
           - download: current
             artifact: 'drop-ui-tests'    
           - task: Bash@3
+            condition: false
+            displayName: 'Prepare selenium'
             inputs:
               targetType: 'inline'
               script: |           
                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-                sudo apt-get upgrade -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                pip install selenium
+                #sudo apt-get upgrade -y
+                #sudo apt-get install unzip -y
+                #sudo apt-get install -y chromium-browser
+                #pip install selenium
                 
                 #  ToDo: Add chromedriver executable to path
                 # wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
@@ -257,7 +259,8 @@ stages:
             displayName: Run selenium
             inputs:
               script: |
-                echo $(System.DefaultWorkingDirectory) System.DefaultWorkingDirectory
+                echo '--------->' $(System.DefaultWorkingDirectory)
+                echo '--------->' System.DefaultWorkingDirectory
                 wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
                 unzip chromedriver_linux64.zip 
                 sudo chmod +x chromedriver
