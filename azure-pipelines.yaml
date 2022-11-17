@@ -116,6 +116,7 @@ stages:
       continueOnError: true
       inputs:
         script: |
+          newman -v
           newman run validation-data-test.json --reporters cli,junit --reporter-junit-export results\validation-data-test.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 
