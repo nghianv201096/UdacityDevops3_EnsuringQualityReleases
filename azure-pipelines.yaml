@@ -241,7 +241,7 @@ stages:
               targetType: 'inline'
               script: |           
                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-                echo '--------->' System.DefaultWorkingDirectory
+                echo '--------->' $(System.DefaultWorkingDirectory)
                 pwd
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
