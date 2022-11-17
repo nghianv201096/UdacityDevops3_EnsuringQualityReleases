@@ -262,7 +262,11 @@ stages:
                 echo '--------->' $(System.DefaultWorkingDirectory)
                 echo '--------->' System.DefaultWorkingDirectory
                 wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+                echo '--------->'
+                ls
                 unzip chromedriver_linux64.zip 
+                echo '--------->'
+                ls
                 sudo chmod +x chromedriver
                 mv chromedriver ./automatedtesting/selenium/
                 chromium-browser -version
