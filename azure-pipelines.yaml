@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: false
+    condition: true
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -41,7 +41,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendServiceArm: '$(azureServiceConnectionId)'
         backendAzureRmResourceGroupName: 'Azuredevops'
-        backendAzureRmStorageAccountName: 'tfstate2443121269'
+        backendAzureRmStorageAccountName: 'tfstate177617370'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
    
@@ -76,7 +76,6 @@ stages:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-
     # ToDo: Change the workingDirectory path, as applicable to you
     # Destroy the resources in Azure by running a separate pipeline. 
     # - task: TerraformTaskV3@3
@@ -87,10 +86,152 @@ stages:
     #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
+
     #--------------------------------------------#    
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
+  
+  - job: Upload artifact for vm and app-service
+    displayName: 'Publish artifacts: Selenium tests, FakeRestAPI code'
+    condition: true
+    steps:
+    #--------------------------------------------#
+    # Selenium (UI) Test Suite - Archive the package  
+    # "ArchiveFiles@2" picks up the web package and archives it.
+    - task: ArchiveFiles@2
+      displayName: 'Archive selenium tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
+    # Selenium Test Suite - Publish the package  
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
+      displayName: 'Upload selenium tests'
+      artifact: drop-ui-tests
+
+    #--------------------------------------------#    
+    # FakeRestAPI - Archive
+    # # ToDo: Complete the ArchiveFiles@2 task and publish step 
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI code'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    #FakeRestAPI - Publish    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+      displayName: 'Upload FakeRestAPI code'
+      artifact: drop-fakerestapi
+    
+#--------------------------------------------#  
+# DEPLOYMENT STAGE
+#--------------------------------------------#    
+- stage: Deploy
+  jobs:
+  #--------------------------------------------#  
+  # Deploy FakeRestAPI Web App
+  - deployment: FakeRestAPI
+    condition: true
+    pool: 
+      name: '$(poolName)'
+    environment: '$(environmentName)'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            condition: false
+            displayName: 'Deploy Azure Web App'
+            inputs:
+              azureSubscription: $(azureServiceConnectionId)
+              appName: $(appName)
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip 
+              
+  #--------------------------------------------#  
+ # Selenium | Functional UI Tests
+ # ToDo: 
+  - deployment: VMDeployAndSeleniumTest
+    condition: false
+    displayName: Selenium Tests
+    workspace:
+      clean: all
+    environment:
+      name: '$(environmentName)'
+      resourceType: VirtualMachine
+      tags: selenium
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: 'drop-ui-tests'    
+          - task: Bash@3
+            displayName: 'Setup selenium'
+            inputs:
+              targetType: 'inline'
+              script: |           
+               # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
+                echo '---------> DefaultWorkingDirectory: ' $(System.DefaultWorkingDirectory)
+                echo '---------> pwd: ' pwd
+
+                echo '---------> updating apt-get'
+                sudo apt-get update
+                sudo apt-get upgrade -y
+                
+                echo '---------> installing python3-pip'
+                sudo apt-get install python3-pip -y
+                
+                echo '---------> installing unzip'
+                sudo apt-get install unzip -y
+
+                echo '---------> installing chronium-browser'
+                sudo apt-get install -y chromium-browser
+
+                echo '---------> installing selenium'
+                pip3 install selenium
+                
+                #  ToDo: Add chromedriver executable to path
+                #export PATH=$PATH:/path/to/chromedriver
+
+                # ToDo: Write commands for deploying the UI Test Suite (published zip artifact) to the linux VM and execute the Test Suite
+                echo '---------> unzipping test file'
+                unzip '../drop-ui-tests/$(Build.BuildId)-ui-tests.zip'
+                ls
+
+                echo '---------> downloading chrome-driver'
+                wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+                unzip chromedriver_linux64.zip 
+
+                echo '---------> adding permission to chromedriver'
+                ls
+                sudo chmod +x chromedriver
+                chromium-browser -version
+                chromedriver --version
+
+                echo '---------> run selenium tests'
+                python login.py > selenium.log
+
+                echo '---------> output'
+                cat selenium.log
+                echo '---------> running test done'
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish selenium logs
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/selenium.log'
+              artifactName: 'drop-selenium-logs'
+                
+#--------------------------------------------#  
+# TEST STAGE
+#--------------------------------------------#    
+- stage: Test
+  condition: false
+  jobs:
   - job: TestWithPostman
+    displayName: 'Test with Postman'
     condition: false
     steps:
     - task: CmdLine@2
@@ -138,67 +279,14 @@ stages:
         #searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman/results'
         mergeTestResults: true
         testRunTitle: 'Postman regression and data validation test'
-  - job:
-    displayName: 'Prepare artifacts: Selenium tests, FakeRestAPI code'
-    condition: true
-    steps:
-    #--------------------------------------------#
-    # Selenium (UI) Test Suite - Archive the package  
-    # "ArchiveFiles@2" picks up the web package and archives it.
-    - task: ArchiveFiles@2
-      displayName: 'Archive UI Tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
-    # Selenium Test Suite - Publish the package  
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
-      displayName: 'Upload Package'
-      artifact: drop-ui-tests
-
-    #--------------------------------------------#    
-    # FakeRestAPI - Archive
-    # # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    #FakeRestAPI - Publish    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
-    
-#--------------------------------------------#  
-# DEPLOYMENT STAGE
-#--------------------------------------------#    
-- stage: Deploy
-  jobs:
-  #--------------------------------------------#  
-  # Deploy FakeRestAPI Web App
-  - deployment: FakeRestAPI
+  
+  - job: TestWithJmeter
+    displayName: 'Test with Jmeter'
     condition: false
-    pool: 
-      name: '$(poolName)'
-    environment: '$(environmentName)'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            condition: false
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: $(azureServiceConnectionId)
-              appName: $(appName)
-              appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip 
-          #--------------------------------------------#    
-          # Run JMeter test suite against the App Service
-          - task: CmdLine@2
+    steps:
+    #--------------------------------------------#    
+    # Run JMeter test suite against the App Service
+    - task: CmdLine@2
             inputs:
               script: |
                 echo '-------> Path:'
@@ -219,82 +307,3 @@ stages:
                 echo '-------> jmeter tested'
 
               workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-              
-  #--------------------------------------------#  
- # Selenium | Functional UI Tests
- # ToDo: 
-  - deployment: VMDeploy
-    displayName: Selenium Tests
-    workspace:
-      clean: all
-    environment:
-      name: '$(environmentName)'
-      resourceType: VirtualMachine
-      tags: selenium
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: 'drop-ui-tests'    
-          - task: Bash@3
-            displayName: 'Run selenium'
-            inputs:
-              targetType: 'inline'
-              script: |           
-               # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-                echo '--------->' $(System.DefaultWorkingDirectory)
-                pwd
-
-                sudo apt-get update
-                sudo apt-get upgrade -y
-                
-                echo '---------> installing python3-pip'
-                sudo apt-get install python3-pip -y
-                
-                echo '---------> installing unzip'
-                sudo apt-get install unzip -y
-                unzip '../drop-ui-tests/$(Build.BuildId)-ui-tests.zip'
-                ls
-
-                echo '---------> installing chronium-browser'
-                sudo apt-get install -y chromium-browser
-
-                echo '---------> installing selenium'
-                pip3 install selenium
-                
-                #  ToDo: Add chromedriver executable to path
-                export PATH=$PATH:/path/to/chromedriver
-
-                # ToDo: Write commands for deploying the UI Test Suite (published zip artifact) to the linux VM and execute the Test Suite
-                
-
-                # ToDo: Direct the output of the Selenium Test Suite to a log file
-          - task: CmdLine@2
-            condition: false
-            displayName: Run selenium
-            inputs:
-              script: |
-                echo '--------->' $(System.DefaultWorkingDirectory)
-                echo '--------->' System.DefaultWorkingDirectory
-                wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-                echo '--------->'
-                ls
-                unzip chromedriver_linux64.zip 
-                echo '--------->'
-                ls
-                sudo chmod +x chromedriver
-                mv chromedriver ./automatedtesting/selenium/
-                chromium-browser -version
-                ./automatedtesting/selenium/chromedriver --version
-                python automatedtesting/selenium/login.py > selenium.log
-                sudo mkdir /var/logs
-                sudo cp selenium.log /var/logs/
-              workingDirectory: $(System.DefaultWorkingDirectory)
-              
-          - task: PublishPipelineArtifact@1
-            displayName: Publish selenium logs
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/selenium.log'
-              artifactName: 'drop-selenium-logs'
-                
