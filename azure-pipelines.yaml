@@ -106,6 +106,7 @@ stages:
           echo '----------->pwd:'
           pwd
           chmod 744 ~/.npm-global/bin/newman
+          newman -v
         workingDirectory: $(System.DefaultWorkingDirectory)
 
    # Postman Data Validation Test Suite    
