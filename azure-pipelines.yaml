@@ -149,11 +149,11 @@ stages:
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    FakeRestAPI - Publish    
-    - publish:
+    #FakeRestAPI - Publish    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
-
+    
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
