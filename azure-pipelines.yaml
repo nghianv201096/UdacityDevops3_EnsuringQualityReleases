@@ -281,14 +281,14 @@ stages:
       displayName: Ui Tests
       inputs:
         script: |
-          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip 
-          echo '--------->'
-          whoami
-          sudo chmod +x chromedriver
-          mv chromedriver ./automatedtesting/selenium/
-          chromium-browser -version
-          ./automatedtesting/selenium/chromedriver --version
+          # wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+          # unzip chromedriver_linux64.zip 
+          # echo '--------->'
+          # whoami
+          # sudo chmod +x chromedriver
+          # mv chromedriver ./automatedtesting/selenium/
+          # chromium-browser -version
+          # ./automatedtesting/selenium/chromedriver --version
           python3 automatedtesting/selenium/login.py > ui.log
           sudo mkdir /var/logs
           sudo cp ui.log /var/logs/
