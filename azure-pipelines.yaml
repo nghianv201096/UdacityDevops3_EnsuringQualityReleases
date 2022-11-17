@@ -290,8 +290,8 @@ stages:
           chromium-browser -version
           ./automatedtesting/selenium/chromedriver --version
           python3 automatedtesting/selenium/login.py > ui.log
-          mkdir /var/logs
-          cp ui.log /var/logs/
+          sudo mkdir /var/logs
+          sudo cp ui.log /var/logs/
         workingDirectory: $(System.DefaultWorkingDirectory)
     - task: PublishPipelineArtifact@1
       displayName: Publish selenium logs
