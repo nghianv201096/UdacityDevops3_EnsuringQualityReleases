@@ -93,12 +93,19 @@ stages:
   - job: TestWithPostman
     condition: true
     steps:
+    - task: Npm@1
+      displayName: 'Install npm'
+      inputs:
+        command: 'install'
+        workingDir: $(System.DefaultWorkingDirectory)
+
     - task: CmdLine@2
       displayName: Install Newman
       inputs:
         script: |
           npm install -g newman
           workingDirectory: $(System.DefaultWorkingDirectory)
+
    # Postman Data Validation Test Suite    
    # ToDo: Verify the working directory and the newman scripts
     - task: CmdLine@2
@@ -108,6 +115,7 @@ stages:
         script: |
           newman run validation-data-test.json --reporters cli,junit --reporter-junit-export results\validation-data-test.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+
    # Postman Regression Test Suite    
    # ToDo: Update the command and verify the working directory
     - task: CmdLine@2
@@ -117,6 +125,7 @@ stages:
         script: |
           newman run regression-test.json --reporters cli,junit --reporter-junit-export results\regression-test.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+
    # Postman - Publish Results 
    # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
     - task: PublishTestResults@2
