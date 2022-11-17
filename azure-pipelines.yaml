@@ -99,9 +99,9 @@ stages:
         script: |
           mkdir ~/.npm-global
           npm config set prefix '~/.npm-global'
-          npm install -g newman
           export PATH=~/.npm-global/bin:$PATH
           source ~/.profile
+          npm install -g newman
           echo '----------->path:' $PATH
           echo '----------->pwd:'
           pwd
