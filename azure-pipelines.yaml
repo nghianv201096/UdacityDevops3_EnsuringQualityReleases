@@ -93,6 +93,7 @@ stages:
   
   - job: Upload artifact for vm and app-service
     displayName: 'Publish artifacts: Selenium tests, FakeRestAPI code'
+    dependsOn: BuildInfrastructureWithTerraform
     condition: true
     steps:
     #--------------------------------------------#
@@ -132,7 +133,7 @@ stages:
   jobs:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
-  - deployment: FakeRestAPI
+  - deployment: DeployAppService
     condition: true
     pool: 
       name: '$(poolName)'
@@ -153,7 +154,7 @@ stages:
   #--------------------------------------------#  
  # Selenium | Functional UI Tests
  # ToDo: 
-  - deployment: VMDeployAndSeleniumTest
+  - deployment: DeployVMAndRunSelenium
     condition: false
     displayName: Selenium Tests
     workspace:
