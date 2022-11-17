@@ -277,7 +277,6 @@ stages:
 
   - job: TestWithSelenium
     displayName: 'Test with selenium'
-    condition: true
     steps:
     - task: CmdLine@2
       displayName: Ui Tests
