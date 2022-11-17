@@ -91,7 +91,7 @@ stages:
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
   
-  - job: Upload artifact for vm and app-service
+  - job: UploadArtifactForVmAndAppService
     displayName: 'Publish artifacts: Selenium tests, FakeRestAPI code'
     dependsOn: BuildInfrastructureWithTerraform
     condition: true
@@ -288,23 +288,23 @@ stages:
     #--------------------------------------------#    
     # Run JMeter test suite against the App Service
     - task: CmdLine@2
-            inputs:
-              script: |
-                echo '-------> Path:'
-                pwd
+      inputs:
+        script: |
+          echo '-------> Path:'
+          pwd
 
-                echo '-------> Cleanning old data...'
-                rm -rf tests
-                echo '-------> Cleanned old data'
-                
-                export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
-                echo '-------> path with jmeter:' $PATH
-                
-                echo '-------> jmeter testing...'
-                jmeter -n -t Starter.jmx \
-                  -l logs/test-output.csv \
-                  -e -f -o logs/test-log.html \
-                  -j logs/jmeter.log
-                echo '-------> jmeter tested'
+          echo '-------> Cleanning old data...'
+          rm -rf tests
+          echo '-------> Cleanned old data'
+          
+          export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
+          echo '-------> path with jmeter:' $PATH
+          
+          echo '-------> jmeter testing...'
+          jmeter -n -t Starter.jmx \
+            -l logs/test-output.csv \
+            -e -f -o logs/test-log.html \
+            -j logs/jmeter.log
+          echo '-------> jmeter tested'
 
-              workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
