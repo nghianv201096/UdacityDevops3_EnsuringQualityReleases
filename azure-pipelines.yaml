@@ -253,7 +253,8 @@ stages:
                 echo '---------> installing unzip'
                 sudo apt-get install unzip -y
                 unzip '../drop-ui-tests/$(Build.BuildId)-ui-tests.zip'
-
+                ls
+                
                 echo '---------> installing chronium-browser'
                 sudo apt-get install -y chromium-browser
 
