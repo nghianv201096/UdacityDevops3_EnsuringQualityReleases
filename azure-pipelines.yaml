@@ -91,7 +91,7 @@ stages:
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
   
-  - job: Upload artifact for vm and app-service
+  - job: UploadArtifactForVmAndAppService
     displayName: 'Publish artifacts: Selenium tests, FakeRestAPI code'
     condition: true
     steps:
