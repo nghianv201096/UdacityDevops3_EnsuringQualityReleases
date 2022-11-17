@@ -99,7 +99,7 @@ stages:
         script: |
           mkdir ~/.npm-global
           npm config set prefix '~/.npm-global'
-          export PATH=~/.npm-global/bin:$PATH
+          export PATH=~/.npm-global/bin:~/.npm-global/lib/node_modules/newman/bin:$PATH
           source ~/.profile
           npm install -g newman
         workingDirectory: $(System.DefaultWorkingDirectory)
