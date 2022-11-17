@@ -208,8 +208,13 @@ stages:
                 echo '---------> adding permission to chromedriver'
                 ls
                 sudo chmod +x chromedriver
-                chromium-browser -version
+                export PATH=$PATH:/home/nghianv/azagent/_work/1/s
+                
+                echo '---------> chromedriver version: '
                 chromedriver --version
+
+                echo '---------> chromium-browser version: '
+                chromium-browser -version
 
                 echo '---------> run selenium tests'
                 python login.py > selenium.log
