@@ -153,8 +153,8 @@ stages:
   #--------------------------------------------#  
  # Selenium | Functional UI Tests
  # ToDo: 
-  - deployment: DeployVMAndRunSelenium
-    condition: true
+  - deployment: DeployVM
+    condition: false
     displayName: Selenium Tests
     workspace:
       clean: all
@@ -169,7 +169,7 @@ stages:
           - download: current
             artifact: 'drop-ui-tests'    
           - task: Bash@3
-            displayName: 'Setup selenium'
+            displayName: 'Setup VM'
             inputs:
               targetType: 'inline'
               script: |           
@@ -192,42 +192,6 @@ stages:
 
                 echo '---------> installing selenium'
                 pip3 install selenium
-                
-                #  ToDo: Add chromedriver executable to path
-                #export PATH=$PATH:/path/to/chromedriver
-
-                # ToDo: Write commands for deploying the UI Test Suite (published zip artifact) to the linux VM and execute the Test Suite
-                echo '---------> unzipping test file'
-                unzip '../drop-ui-tests/$(Build.BuildId)-ui-tests.zip'
-                ls
-
-                echo '---------> downloading chrome-driver'
-                wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-                unzip chromedriver_linux64.zip 
-
-                echo '---------> adding permission to chromedriver'
-                ls
-                sudo chmod +x chromedriver
-                export PATH=$PATH:/home/nghianv/azagent/_work/1/s
-                
-                echo '---------> chromedriver version: '
-                chromedriver --version
-
-                echo '---------> chromium-browser version: '
-                chromium-browser -version
-
-                echo '---------> run selenium tests'
-                python login.py > selenium.log
-
-                echo '---------> output'
-                cat selenium.log
-                echo '---------> running test done'
-
-          - task: PublishPipelineArtifact@1
-            displayName: Publish selenium logs
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/selenium.log'
-              artifactName: 'drop-selenium-logs'
                 
 #--------------------------------------------#  
 # TEST STAGE
@@ -312,3 +276,26 @@ stages:
           echo '-------> jmeter tested'
 
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+
+  - job: TestWithSelenium
+    displayName: 'Test with selenium'
+    steps:
+    - task: CmdLine@2
+      displayName: Ui Tests
+      inputs:
+        script: |
+          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip 
+          sudo chmod +x chromedriver
+          mv chromedriver ./automatedtesting/selenium/
+          chromium-browser -version
+          ./automatedtesting/selenium/chromedriver --version
+          python automatedtesting/selenium/test.py > ui.log
+          sudo mkdir /var/logs
+          sudo cp ui.log /var/logs/
+        workingDirectory: $(System.DefaultWorkingDirectory)
+    - task: PublishPipelineArtifact@1
+      displayName: Publish selenium logs
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/ui.log'
+        artifactName: 'drop-selenium-logs'
