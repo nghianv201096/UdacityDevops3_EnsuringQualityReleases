@@ -264,6 +264,5 @@ stages:
                 pip install chromedriver-py=96.0.4664.18
                 pip install pytest-xdist
                 pip install pytest-nunit
-                python3 login.py
-            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+                python3 automatedtesting/selenium/login.py
                 
