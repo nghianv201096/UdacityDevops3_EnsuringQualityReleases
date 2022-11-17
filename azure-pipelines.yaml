@@ -243,10 +243,21 @@ stages:
                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
                 echo '--------->' $(System.DefaultWorkingDirectory)
                 pwd
+
+                sudo apt-get update
                 sudo apt-get upgrade -y
+                
+                echo '---------> installing python3-pip'
                 sudo apt-get install python3-pip -y
+                
+                echo '---------> installing unzip'
                 sudo apt-get install unzip -y
+                unzip '../drop-ui-tests/$(Build.BuildId)-ui-tests.zip'
+
+                echo '---------> installing chronium-browser'
                 sudo apt-get install -y chromium-browser
+
+                echo '---------> installing selenium'
                 pip3 install selenium
                 
                 #  ToDo: Add chromedriver executable to path
