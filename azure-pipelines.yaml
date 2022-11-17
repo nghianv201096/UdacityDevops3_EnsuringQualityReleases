@@ -150,7 +150,7 @@ stages:
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
     FakeRestAPI - Publish    
-    - publish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    - publish:
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
 
