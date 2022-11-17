@@ -91,7 +91,7 @@ stages:
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
   - job: TestWithPostman
-    condition: true
+    condition: false
     steps:
     - task: CmdLine@2
       displayName: Install Newman
@@ -140,22 +140,22 @@ stages:
         testRunTitle: 'Postman regression and data validation test'
   - job:
     displayName: 'Prepare artifacts: Selenium tests, FakeRestAPI code'
-    condition: false
+    condition: true
     steps:
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
     # "ArchiveFiles@2" picks up the web package and archives it.
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive UI Tests'
-    #   inputs:
-    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
+    - task: ArchiveFiles@2
+      displayName: 'Archive UI Tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip'
     # Selenium Test Suite - Publish the package  
-    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
-    #   displayName: 'Upload Package'
-    #   artifact: drop-ui-tests
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-ui-tests.zip   # Same as the archiveFile artifact above. 
+      displayName: 'Upload Package'
+      artifact: drop-ui-tests
 
     #--------------------------------------------#    
     # FakeRestAPI - Archive
@@ -176,7 +176,6 @@ stages:
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
 - stage: Deploy
-  condition: false
   jobs:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
@@ -189,6 +188,7 @@ stages:
         deploy:
           steps:
           - task: AzureWebApp@1
+            condition: false
             displayName: 'Deploy Azure Web App'
             inputs:
               azureSubscription: $(azureServiceConnectionId)
@@ -220,36 +220,50 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
               
   #--------------------------------------------#  
-#  # Selenium | Functional UI Tests
-#  # ToDo: 
-#  - deployment: VMDeploy
-#    displayName: Selenium Tests
-#    environment:
-#      name: '$(environmentName)'
-#      resourceType: VirtualMachine
-#      tags: selenium
-#    strategy:
-#      runOnce:
-#        deploy:
-#          steps:
-#          - download: current
-#            artifact: 'drop-ui-tests'    
-#          - task: Bash@3
-#            inputs:
-#              targetType: 'inline'
-#              script: |           
-#                # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-#                #! /bin/bash
-#                
-#                sudo apt-get upgrade -y
-#                sudo apt-get install python3-pip -y
-#                sudo apt-get install unzip -y
-#                sudo apt-get install -y chromium-browser
-#                pip3 install selenium
-#                
-#                #  ToDo: Add chromedriver executable to path
-#                export PATH=$PATH:/path/to/chromedriver     
-#                
-#                # ToDo: Write commands for deploying the UI Test Suite (published zip artifact) to the linux VM and execute the Test Suite
-#                # ToDo: Direct the output of the Selenium Test Suite to a log file
+ # Selenium | Functional UI Tests
+ # ToDo: 
+  - deployment: VMDeploy
+    displayName: Selenium Tests
+    environment:
+      name: '$(environmentName)'
+      resourceType: VirtualMachine
+      tags: selenium
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: 'drop-ui-tests'    
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |           
+               # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
+               #! /bin/bash
+               
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                pip3 install selenium
+                sudo rm -rf chromedriver*
+                wget https://chromedriver.storage.googleapis.com/96.0.4664.18/chromedriver_linux64.zip //update the version here
+                unzip chromedriver*.zip
+                sudo mv chromedriver -f /usr/bin
+
+          - task: Bash@3
+            displayName: Run Selenium
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+                python -m pip install --upgrade pip
+                pip install selenium
+                pip install pytest
+                pip install pytest-html
+                pip install chromedriver-py=96.0.4664.18
+                pip install pytest-xdist
+                pip install pytest-nunit
+                python3 login.py
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
                 
