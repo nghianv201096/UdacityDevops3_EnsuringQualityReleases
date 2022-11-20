@@ -17,3 +17,6 @@ variable address_space {}
 # Virtual machine
 variable vm_username {}
 variable vm_password {}
+
+# Image for linux
+variable image_name {}

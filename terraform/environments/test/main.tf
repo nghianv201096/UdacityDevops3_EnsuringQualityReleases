@@ -58,4 +58,6 @@ module "vm" {
   public_ip_address_id = "${module.publicip.public_ip_address_id}"
   vm_username = "${var.vm_username}"
   vm_password = "${var.vm_password}"
+  image_name = "${var.image_name}"
+  image_resource_group_name = "${var.resource_group}"
 }

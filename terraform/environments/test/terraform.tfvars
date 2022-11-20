@@ -19,3 +19,6 @@ address_prefix_test = "10.5.1.0/24"
 # Virtual machine
 vm_username = "nghianv"
 vm_password = "nghianv@123456"
+
+# Image for linux
+image_name = "ubuntu-2004"
