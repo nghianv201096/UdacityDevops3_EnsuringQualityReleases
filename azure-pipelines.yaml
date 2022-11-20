@@ -166,10 +166,10 @@ stages:
                 sudo mkdir /var/logs
                 python3 uitests.py > ui-logs.log
           - task: PublishPipelineArtifact@1
-              displayName: Publish selenium logs
-              inputs:
-                targetPath: '$(System.DefaultWorkingDirectory)/ui-logs.log'
-                artifactName: 'drop-selenium-logs'
+            displayName: Publish selenium logs
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/ui-logs.log'
+              artifactName: 'drop-selenium-logs'
 
 
                 
