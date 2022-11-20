@@ -103,11 +103,11 @@ stages:
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
 - stage: Deploy
+  condition: false
   jobs:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
-    condition: false
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -127,7 +127,6 @@ stages:
  # Selenium | Functional UI Tests
  # ToDo: 
   - deployment: DeployVM
-    condition: true
     displayName: Deploy VM and execute Selenium tests
     workspace:
       clean: all
@@ -173,14 +172,12 @@ stages:
             inputs:
               targetPath: '$(System.DefaultWorkingDirectory)/ui-logs.log'
               artifactName: 'drop-selenium-logs'
-
-
                 
 #--------------------------------------------#  
 # TEST STAGE
 #--------------------------------------------#    
 - stage: Test
-  condition: false
+  condition: true
   jobs:
   - job: TestWithPostman
     displayName: 'Test with Postman'
@@ -271,30 +268,3 @@ stages:
       inputs:
         targetPath: '$(System.DefaultWorkingDirectory)/logs/jmeter'
         artifactName: 'drop-jmeter-logs'
-  
-  - job: TestWithSelenium
-    displayName: 'Test with selenium'
-    steps:
-    - task: CmdLine@2
-      condition: false
-      displayName: Ui Tests
-      inputs:
-        script: |
-          # wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-          # unzip chromedriver_linux64.zip 
-          # echo '--------->'
-          # whoami
-          # sudo chmod +x chromedriver
-          # mv chromedriver ./automatedtesting/selenium/
-          # chromium-browser -version
-          # ./automatedtesting/selenium/chromedriver --version
-          export PATH=$PATH:$HOME/Desktop/UdacityDevops3_EnsuringQualityReleases/automatedtesting/selenium
-          python3 automatedtesting/selenium/login.py > ui.log
-          sudo mkdir /var/logs
-          sudo cp ui.log /var/logs/
-        workingDirectory: $(System.DefaultWorkingDirectory)
-    - task: PublishPipelineArtifact@1
-      displayName: Publish selenium logs
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/ui.log'
-        artifactName: 'drop-selenium-logs'
