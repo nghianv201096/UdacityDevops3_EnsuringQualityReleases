@@ -128,7 +128,7 @@ stages:
  # ToDo: 
   - deployment: DeployVM
     condition: true
-    displayName: Selenium Tests
+    displayName: Deploy VM and execute Selenium tests
     workspace:
       clean: all
     environment:
@@ -142,17 +142,17 @@ stages:
           - download: current
             artifact: 'drop-ui-tests'    
           - task: Bash@3
-            displayName: 'Setup VM'
+            displayName: 'Deploy VM'
             inputs:
               targetType: 'inline'
               script: |           
                 pwd
                 pip3 install selenium
           - download: current
-            displayName: 'Download test artifacts'
+            displayName: 'Download selenium tests'
             artifact: drop-ui-tests
           - task: Bash@3
-            displayName: Test UI
+            displayName: 'Execute selenium tests'
             inputs:
               targetType: 'inline'
               script: |
@@ -161,7 +161,7 @@ stages:
                 unzip -o $(Pipeline.Workspace)/drop-ui-tests/$(Build.BuildId)-ui-tests.zip -d .
                 echo '------------> list of file' 
                 ls
-                python3 uitests.py > ui-logs.log
+                python3 login.py > ui-logs.log
                 ls
               workingDirectory: $(System.DefaultWorkingDirectory)
           - task: PublishPipelineArtifact@1
