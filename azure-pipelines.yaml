@@ -152,19 +152,19 @@ stages:
             displayName: 'Download test artifacts'
             artifact: drop-ui-tests
           - task: Bash@3
-              displayName: Test UI
+            displayName: Test UI
               inputs:
-                targetType: 'inline'
-                script: |
-                  echo '------------> current path' 
-                  pwd
-                  echo '------------> Default working directory:' $(System.DefaultWorkingDirectory)
-                  echo '------------> pipeline workspace' $(Pipeline.Workspace)
-                  unzip -o $(Pipeline.Workspace)/selenium/selenium-tests.zip -d .
-                  echo '------------> list of file' 
-                  ls
-                  sudo mkdir /var/logs
-                  python3 uitests.py > ui-logs.log
+              targetType: 'inline'
+              script: |
+                echo '------------> current path' 
+                pwd
+                echo '------------> Default working directory:' $(System.DefaultWorkingDirectory)
+                echo '------------> pipeline workspace' $(Pipeline.Workspace)
+                unzip -o $(Pipeline.Workspace)/selenium/selenium-tests.zip -d .
+                echo '------------> list of file' 
+                ls
+                sudo mkdir /var/logs
+                python3 uitests.py > ui-logs.log
           - task: PublishPipelineArtifact@1
               displayName: Publish selenium logs
               inputs:
