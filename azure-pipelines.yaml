@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: false
+    condition: true
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -134,7 +134,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
-    condition: false
+    condition: true
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -154,7 +154,7 @@ stages:
  # Selenium | Functional UI Tests
  # ToDo: 
   - deployment: DeployVM
-    condition: false
+    condition: true
     displayName: Selenium Tests
     workspace:
       clean: all
@@ -253,6 +253,7 @@ stages:
     #--------------------------------------------#    
     # Run JMeter test suite against the App Service
     - task: CmdLine@2
+      displayName: 'Run Jmeter'
       inputs:
         script: |
           echo '-------> Path:'
@@ -273,7 +274,19 @@ stages:
           echo '-------> jmeter tested'
 
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-
+    - task: ArchiveFiles@2
+      displayName: Archive JMeter HTML report
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/logs'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(System.DefaultWorkingDirectory)/logs/jmeter/jmeter-html-report-$(Build.BuildId).zip'
+        verbose: true
+    - task: PublishPipelineArtifact@1
+      displayName: Publish JMeter logs
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/logs/jmeter'
+        artifactName: 'drop-jmeter-logs'
   - job: TestWithSelenium
     displayName: 'Test with selenium'
     steps:
