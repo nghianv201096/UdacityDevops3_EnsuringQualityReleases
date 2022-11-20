@@ -1,0 +1,65 @@
+{
+	"variables": {
+		"client_id": "578f7950-575c-4a44-9d71-b5609f71fa0a",
+		"client_secret": "u7a8Q~akXvjIXm2aUDdPwm96QpdYR95ByzeSqak2",
+		"subscription_id": "a785336a-35d8-4efd-80be-93d34a9e4b66"
+	},
+	"builders": [{
+		"type": "azure-arm",
+		 
+		"client_id": "{{user `client_id`}}",
+		"client_secret": "{{user `client_secret`}}",
+		"subscription_id": "{{user `subscription_id`}}",
+	 
+		"os_type": "Linux",
+		"image_publisher": "Canonical",
+		"image_offer": "UbuntuServer",
+		"image_sku": "18.04-LTS",
+	 
+		"managed_image_resource_group_name": "Azuredevops",
+		"managed_image_name": "ubuntu1804_Image",
+	 	
+		"azure_tags": {
+			"env": "dev"
+		},
+		
+		"location": "Australia East",
+		"vm_size": "Standard_DS1_v2"
+	}],
+	"provisioners": [{
+		"inline": [
+            "mkdir azagent",
+            "cd azagent",
+            "curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.213.2/vsts-agent-linux-x64-2.213.2.tar.gz",
+            "tar -zxvf vstsagent.tar.gz",
+            " if [ -x '$(command -v systemctl)' ]; then ./config.sh --environment --environmentname 'test' --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/odluser216129/ --work _work --projectname 'Devops' --auth PAT --token nptgpvqoxtoro2uoz7mkq6xdcdgyru7s5ph7jqikrkbfz52573xa --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname 'test' --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/odluser216129/ --work _work --projectname 'Devops' --auth PAT --token nptgpvqoxtoro2uoz7mkq6xdcdgyru7s5ph7jqikrkbfz52573xa; ./run.sh; fi",
+            "echo '-------> Done attach to test environment'",
+            "cd ~",
+            "sudo apt update",
+            "sudo apt install -y unzip xvfb libxi6 libgconf-2-4 ",
+            "sudo apt install default-jdk",
+            "sudo apt -y update",
+            "wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip",
+            "unzip chromedriver_linux64.zip",
+            "sudo chmod +x ./chromedriver",
+            "wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar",
+            "mv selenium-server-standalone-3.141.59.jar selenium-server-standalone.jar",
+            "wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip",
+            "unzip testng-6.8.7.jar.zip",
+            "sudo apt-get update",
+            "sudo apt-get upgrade -y",
+            "sudo apt-get install python3-pip -y",
+            "sudo apt-get install unzip -y",
+            "sudo apt-get install -y chromium-browser",
+            "pip3 install selenium",
+            "echo '--------------->Check result'",
+            "echo chromium-browser --version",
+            "echo chromedriver --version",
+            "pwd",
+            "ls",
+            "echo '--------------->Done'"
+		],
+		"inline_shebang": "/bin/sh -x",
+		"type": "shell"
+	}]
+}
