@@ -148,7 +148,7 @@ stages:
               script: |           
                 pwd
                 pip3 install selenium
-                wget https://chromedriver.storage.googleapis.com/94.0.4606.61/chromedriver_linux64.zip 
+                wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
                 unzip chromedriver_linux64.zip 
                 sudo chmod +x ./chromedriver
               workingDirectory: $(System.DefaultWorkingDirectory)
