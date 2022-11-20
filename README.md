@@ -120,14 +120,52 @@ $ terraform apply Solution.plan
 
 After you can see the changes in console and go to portal site to see the list of created resources
 
-# III. Crete a pipeline
-## 1. Create pipeline
+## 4. Push code to your repository.
+After finish all of above steps. You need to create a repository in Gihub and push code into it for later use in create pipeline.
 
-## 2. Use the existing yaml file
+# III. Config agent pool (optional)
+To run your pipeline you need to specify the pool (include a machine or group of machine) that will run you pipeline. So that you have to:
+* Create  an agent pool
+* Create a machine
+* Add the machine to the pool
+* Specify the pool is use in pipeline.
 
-# IV. Result
+This step guides you how to create your self-hosted agent pool to execute the pipeline. If you wish to run your pipeline using Microsoft hosted agent pool then you can update **pool section** in **azure-pipeline.ymal** and skip this step.
+![Update pool](./images/III_1_Update-pool.png)
+
+## 1. Create a new pool name **test-pool**
+![Create a new agent pool](./images/IV_1_add_agent_pool.png)
+
+## 2. Create a machine to run pipeline
+You can create a virtual machine in Azure portal, a virtual machine in Virtualization software like VirtualBox, VMWare,.. or even use your own machines as long as the version of OS is ubuntu 20.04 LTS.
+
+## 2. Create a new machine for **test-pool**
+You can follow this [link](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops) to add your above machine to **test-pool**
+
+![Create a pool and add an agent](./images/III_Create_vm_agent.png)
+
+After all, you can see your vm is diplayed in agent pool agents tab:
+![VM](./images/III_Attach-vm-to-pool.png)
+
+# IV. Create a pipeline
+## 1. Create a pipeline with an existing yaml file
+![Create a pipeline](./images/III_1_Create-pipeline.png)
+
+## 2. Install the terraform extension
+Go to this [page]( https://marketplace.visualstudio.com/acquisition?itemName=ms-devlabs.custom-terraform-tasks) and install extension.
+![Install terraform](./images/III_Install-terraform.png)
+
+## 2. Execute the pipeline and see result:
+After create the pipeline you can go to the pipeline and run it:
+
+![Run the pipeline](./images/III_Run-pipeline.png)
+
+# V. Result
 
 ## 1. Execution terraform successfully
+* Output from pipeline: 
+
+* Output from portal:
 
 ## 2. Execution of the whole pipeline successfully
 
