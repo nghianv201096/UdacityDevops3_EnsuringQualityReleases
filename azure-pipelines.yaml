@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: true
+    condition: false
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -107,7 +107,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
-    condition: true
+    condition: false
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -158,13 +158,12 @@ stages:
               script: |
                 echo '------------> current path' 
                 pwd
-                echo '------------> Default working directory:' $(System.DefaultWorkingDirectory)
-                echo '------------> pipeline workspace' $(Pipeline.Workspace)
-                unzip -o $(Pipeline.Workspace)/selenium/selenium-tests.zip -d .
+                unzip -o $(Pipeline.Workspace)/drop-ui-tests/$(Build.BuildId)-ui-tests.zip -d .
                 echo '------------> list of file' 
                 ls
-                sudo mkdir /var/logs
                 python3 uitests.py > ui-logs.log
+                ls
+              workingDirectory: $(System.DefaultWorkingDirectory)
           - task: PublishPipelineArtifact@1
             displayName: Publish selenium logs
             inputs:
@@ -177,6 +176,7 @@ stages:
 # TEST STAGE
 #--------------------------------------------#    
 - stage: Test
+  condition: false
   jobs:
   - job: TestWithPostman
     displayName: 'Test with Postman'
