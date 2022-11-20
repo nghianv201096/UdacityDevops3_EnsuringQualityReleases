@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: false
+    condition: true
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -103,7 +103,7 @@ stages:
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
 - stage: Deploy
-  condition: false
+  condition: true
   jobs:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
