@@ -23,7 +23,7 @@
 			"env": "dev"
 		},
 		
-		"location": "Australia East",
+		"location": "East US",
 		"vm_size": "Standard_DS1_v2"
 	}],
 	"provisioners": [{
