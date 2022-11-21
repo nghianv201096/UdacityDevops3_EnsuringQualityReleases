@@ -166,11 +166,11 @@ stages:
                 ls
                 python3 login.py > ui-logs$(Build.BuildId).log
                 ls
-                sudo mkdir /user/logs
-                sudo mkdir /usr/logs/selenium
-                sudo cp ui-logs$(Build.BuildId).log /usr/logs/selenium
+                sudo mkdir /var/logs
+                sudo mkdir /var/logs/selenium
+                sudo cp ui-logs$(Build.BuildId).log /var/logs/selenium
                 echo '------------> Copy log files to folder log successfully'
-                sudo ls /usr/logs/selenium
+                sudo ls /var/logs/selenium
               workingDirectory: $(System.DefaultWorkingDirectory)
           - task: PublishPipelineArtifact@1
             displayName: Publish selenium logs
