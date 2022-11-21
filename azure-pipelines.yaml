@@ -164,13 +164,17 @@ stages:
                 unzip -o $(Pipeline.Workspace)/drop-ui-tests/$(Build.BuildId)-ui-tests.zip -d .
                 echo '------------> list of file' 
                 ls
-                python3 login.py > ui-logs.log
+                python3 login.py > ui-logs$(Build.BuildId).log
                 ls
+                sudo mkdir /usr/logs/selenium
+                sudo cp ui-logs$(Build.BuildId).log /usr/logs/selenium
+                echo '------------> Copy log files to folder log successfully'
+                sudo ls /usr/logs/selenium
               workingDirectory: $(System.DefaultWorkingDirectory)
           - task: PublishPipelineArtifact@1
             displayName: Publish selenium logs
             inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/ui-logs.log'
+              targetPath: '$(System.DefaultWorkingDirectory)/ui-logs$(Build.BuildId).log'
               artifactName: 'drop-selenium-logs'
                 
 #--------------------------------------------#  
@@ -247,21 +251,36 @@ stages:
           export PATH=$PATH:/home/nghianv/Desktop/Tools/apache-jmeter-5.5/bin 
           echo '-------> path with jmeter:' $PATH
           
-          echo '-------> jmeter testing...'
+          echo '-------> jmeter testing endurance...'
           jmeter -n -t Starter.jmx \
-            -l logs/test-output.csv \
-            -e -f -o logs/test-log.html \
-            -j logs/jmeter.log
+            -l logs/stress-test-output.csv \
+            -e -f -o logs/stress-test-log \
+            -j logs/stress-test.log
+
+          echo '-------> jmeter testing endurance...'
+          jmeter -n -t Starter.jmx \
+            -l logs/endurance-test-output.csv \
+            -e -f -o logs/endurance-test-log \
+            -j logs/endurance-test.log
+
           echo '-------> jmeter tested'
 
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
     - task: ArchiveFiles@2
-      displayName: Archive JMeter HTML report
+      displayName: Archive stress test HTML report
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/logs'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/logs/stress-test-log'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(System.DefaultWorkingDirectory)/logs/jmeter/jmeter-html-report-$(Build.BuildId).zip'
+        archiveFile: '$(System.DefaultWorkingDirectory)/logs/jmeter/jmeter-stress-test-html-report-$(Build.BuildId).zip'
+        verbose: true
+    - task: ArchiveFiles@2
+      displayName: Archive endurance HTML report
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/logs/endurance-test-log'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(System.DefaultWorkingDirectory)/logs/jmeter/jmeter-endurance-test-html-report-$(Build.BuildId).zip'
         verbose: true
     - task: PublishPipelineArtifact@1
       displayName: Publish JMeter logs
