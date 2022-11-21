@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: true
+    condition: false
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -108,6 +108,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
+    condition: false
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -182,7 +183,7 @@ stages:
 # TEST STAGE
 #--------------------------------------------#    
 - stage: Test
-  condition: true
+  condition: false
   jobs:
   - job: TestWithPostman
     displayName: 'Test with Postman'
