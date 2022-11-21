@@ -253,13 +253,13 @@ stages:
           echo '-------> path with jmeter:' $PATH
           
           echo '-------> jmeter testing endurance...'
-          jmeter -n -t Starter.jmx \
+          jmeter -n -t stress-test.jmx \
             -l logs/stress-test-output.csv \
             -e -f -o logs/stress-test-log \
             -j logs/stress-test.log
 
           echo '-------> jmeter testing endurance...'
-          jmeter -n -t Starter.jmx \
+          jmeter -n -t endurance-test.jmx \
             -l logs/endurance-test-output.csv \
             -e -f -o logs/endurance-test-log \
             -j logs/endurance-test.log
