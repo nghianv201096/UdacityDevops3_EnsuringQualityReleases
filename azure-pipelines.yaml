@@ -108,6 +108,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
+    condition: false
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
