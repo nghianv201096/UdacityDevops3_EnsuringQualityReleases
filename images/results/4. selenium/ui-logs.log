@@ -1,0 +1,20 @@
+2022-11-20 18:27:36	Starting the browser...
+2022-11-20 18:27:38	Browser started successfully. Navigating to the demo page to login.
+2022-11-20 18:27:38	Login successfully with username standard_user and password secret_sauce.
+2022-11-20 18:27:39	Sauce Labs Bike Light is added to the shopping cart.
+2022-11-20 18:27:39	Sauce Labs Bolt T-Shirt is added to the shopping cart.
+2022-11-20 18:27:39	Sauce Labs Onesie is added to the shopping cart.
+2022-11-20 18:27:39	Test.allTheThings() T-Shirt (Red) is added to the shopping cart.
+2022-11-20 18:27:39	Sauce Labs Backpack is added to the shopping cart.
+2022-11-20 18:27:40	Sauce Labs Fleece Jacket is added to the shopping cart.
+2022-11-20 18:27:40	6 items are all added to the shopping cart successfully.
+2022-11-20 18:27:40	Test adding items done!
+2022-11-20 18:27:40	Sauce Labs Bike Light is removed from the shopping cart.
+2022-11-20 18:27:40	Sauce Labs Bolt T-Shirt is removed from the shopping cart.
+2022-11-20 18:27:40	Sauce Labs Onesie is removed from the shopping cart.
+2022-11-20 18:27:40	Test.allTheThings() T-Shirt (Red) is removed from the shopping cart.
+2022-11-20 18:27:40	Sauce Labs Backpack is removed from the shopping cart.
+2022-11-20 18:27:41	Sauce Labs Fleece Jacket is removed from the shopping cart.
+2022-11-20 18:27:41	6 items are removed from the shopping cart successfully.
+2022-11-20 18:27:41	Test removing items done!
+Clean the client done!

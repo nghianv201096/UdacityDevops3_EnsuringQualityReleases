@@ -22,7 +22,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildInfrastructureWithTerraform
-    condition: false
+    condition: true
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
@@ -108,7 +108,7 @@ stages:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
   - deployment: DeployAppService
-    condition: false
+    condition: true
     pool: 
       name: '$(poolName)'
     environment: '$(environmentName)'
@@ -128,6 +128,7 @@ stages:
  # Selenium | Functional UI Tests
  # ToDo: 
   - deployment: DeployVM
+    condition: true
     displayName: Deploy VM and execute Selenium tests
     workspace:
       clean: all
@@ -183,9 +184,10 @@ stages:
 # TEST STAGE
 #--------------------------------------------#    
 - stage: Test
-  condition: false
+  condition: true
   jobs:
   - job: TestWithPostman
+    condition: true
     displayName: 'Test with Postman'
     steps:
     - task: CmdLine@2
@@ -202,6 +204,7 @@ stages:
    # Postman Data Validation Test Suite    
    # ToDo: Verify the working directory and the newman scripts
     - task: CmdLine@2
+      condition: true
       displayName: Run Data Validation Tests
       continueOnError: true
       inputs:
@@ -235,6 +238,7 @@ stages:
         testRunTitle: 'Postman regression and data validation test'
   
   - job: TestWithJmeter
+    condition: true
     displayName: 'Test with Jmeter'
     steps:
     #--------------------------------------------#    
